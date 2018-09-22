@@ -12,6 +12,13 @@ To run this tutorial you will need a MissingLink account. If you don't have one,
 
 You will also need to have [Python](https://www.python.org/downloads/) and [Docker](https://docs.docker.com/install/#supported-platforms) installed on your workstation.
 
+Finally, you need to have PyCaffe installed in your environment. If you don't have it installed, we recommend using this preconfigured [Docker image](https://github.com/BVLC/caffe/tree/master/docker). Once you have PyCaffe setup, go to the terminal (or bash into the PyCaffe docker container) and make sure you have access to `$CAFFE_ROOT` environment variable:
+
+```bash
+$ echo $CAFFE_ROOT
+/opt/caffe
+```
+
 ---
 **NOTE**
 
@@ -49,7 +56,6 @@ Now that the code is on your machine, let's prepare the environment. Run the fol
 ```bash
 $ python3 -m virtualenv env
 $ source env/bin/activate
-$ pip install -r requirements.txt
 ```
 
 ## Let's run it

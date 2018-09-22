@@ -22,7 +22,7 @@ If you don't have it installed, you can follow [this guide](https://packaging.py
 
 Let’s head to the MissingLink PyCaffe Tutorial 1 [Github repository](https://github.com/missinglinkai/missinglink-pycaffe-tutorial1), and examine it.
 
- Notice it contains the program file, `mnist_cnn.py`, and a `requirements.txt` file. This code trains a simple convnet on the MNIST dataset (borrowed from [PyCaffe examples](https://github.com/BVLC/caffe/blob/master/examples/01-learning-lenet.ipynb)).  
+ Notice it contains the program file, `mnist_cnn.py`. This code trains a simple convnet on the MNIST dataset (borrowed from [PyCaffe examples](https://github.com/BVLC/caffe/blob/master/examples/01-learning-lenet.ipynb)).  
 
 To make changes, you will need to create a copy of the repo and fetch it to your local development environment. Please go ahead and create a fork of the [tutorial repository](https://github.com/missinglinkai/missinglink-pycaffe-tutorial1) by clicking the fork button.
 

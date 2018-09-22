@@ -2,7 +2,7 @@
 
 In this tutorial we will take the existing implementation of a deep learning algorithm and integrate it into the MissingLink system. 
 
-We start with a [code sample](https://github.com/keras-team/keras/blob/master/examples/mnist_cnn.py) that trains a model that is based on the MNIST dataset using a convolutional neural network, add the MissingLink SDK and eventually run the experiment in a MissingLink controlled emulated server.
+We start with a [code sample](https://github.com/BVLC/caffe/blob/master/examples/01-learning-lenet.ipynb) that trains a model that is based on the MNIST dataset using a convolutional neural network, add the MissingLink SDK and eventually run the experiment in a MissingLink controlled emulated server.
 
 # Getting Started
 
@@ -20,11 +20,11 @@ If you don't have it installed, you can follow [this guide](https://packaging.py
 
 ## First things first ...
 
-Let’s head to the MissingLink Keras Tutorial 1 [Github repository](https://github.com/missinglinkai/missinglink-keras-tutorial1), and examine it.
+Let’s head to the MissingLink PyCaffe Tutorial 1 [Github repository](https://github.com/missinglinkai/missinglink-pycaffe-tutorial1), and examine it.
 
- Notice it contains the program file, `mnist_cnn.py`, and a `requirements.txt` file. This code trains a simple convnet on the MNIST dataset (borrowed from [Keras examples](https://github.com/keras-team/keras/blob/master/examples/mnist_cnn.py)).  
+ Notice it contains the program file, `mnist_cnn.py`, and a `requirements.txt` file. This code trains a simple convnet on the MNIST dataset (borrowed from [PyCaffe examples](https://github.com/BVLC/caffe/blob/master/examples/01-learning-lenet.ipynb)).  
 
-To make changes, you will need to create a copy of the repo and fetch it to your local development environment. Please go ahead and create a fork of the [tutorial repository](https://github.com/missinglinkai/missinglink-keras-tutorial1) by clicking the fork button.
+To make changes, you will need to create a copy of the repo and fetch it to your local development environment. Please go ahead and create a fork of the [tutorial repository](https://github.com/missinglinkai/missinglink-pycaffe-tutorial1) by clicking the fork button.
 
 ![Fork on Github](../images/fork_repo.png)
 
@@ -39,7 +39,7 @@ Now copy the URL for cloning the repository:
 Next, let’s open a terminal and `git clone` using the pasted URL of your forked repository:  
 
 ```bash
-$ git clone git@github.com:<YOUR_GITHUB_USERNAME>/missinglink-keras-tutorial1.git
+$ git clone git@github.com:<YOUR_GITHUB_USERNAME>/missinglink-pycaffe-tutorial1.git
 ```
 
 Now that the code is on your machine, let's prepare the environment. Run the following commands:
@@ -277,7 +277,7 @@ We'll need to run a command for launching the local server using the MissingLink
 <!--- TODO: Remove params when possible  --->
 
 ```bash
-$ ml run local --org <ORG_NAME> --project <PROJECT_ID> --git-repo git@github.com:<YOUR_GITHUB_USERNAME>/missinglink-keras-tutorial1.git --cpu --image tensorflow/tensorflow:1.9.0-devel --command "python mnist_cnn.py"
+$ ml run local --org <ORG_NAME> --project <PROJECT_ID> --git-repo git@github.com:<YOUR_GITHUB_USERNAME>/missinglink-pycaffe-tutorial1.git --cpu --image tensorflow/tensorflow:1.9.0-devel --command "python mnist_cnn.py"
 ```
 
 This command takes the code you've committed to your forked repository, clones it to your local server, installs the requirements, and runs the expriment.  

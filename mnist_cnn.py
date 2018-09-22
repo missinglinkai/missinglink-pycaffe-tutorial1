@@ -1,70 +1,52 @@
-'''Trains a simple convnet on the MNIST dataset.
+# Adopted and modified from PyCaffe's MNIST example.
+# https://github.com/BVLC/caffe/blob/master/examples/01-learning-lenet.ipynb
+#
+# In this example, we will train a LeNet network on the MNIST dataset
+# We will then integrate MissingLink SDK in order to remotely monitor our training, validation
+# and testing process.
 
-Gets to 99.25% test accuracy after 12 epochs
-(there is still a lot of margin for parameter tuning).
-16 seconds per epoch on a GRID K520 GPU.
-'''
+import caffe
+import os
 
-from __future__ import print_function
-import keras
-from keras.datasets import mnist
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten
-from keras.layers import Conv2D, MaxPooling2D
-from keras import backend as K
+from caffe import layers as L, params as P
+from subprocess import call
 
-batch_size = 128
-num_classes = 10
-epochs = 12
+caffe_root = os.environ['CAFFE_ROOT']
 
-# input image dimensions
-img_rows, img_cols = 28, 28
+os.environ['GLOG_minloglevel'] = '1'  # Set the logging level
 
-# the data, split between train and test sets
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
+os.chdir(caffe_root)  # Preare to run scripts from caffe root
+call('data/mnist/get_mnist.sh')  # Download MNIST data
+call('examples/mnist/create_mnist.sh')  # Prepare MNIST data
+os.chdir('examples')  # Back to examples
 
-if K.image_data_format() == 'channels_first':
-    x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
-    x_test = x_test.reshape(x_test.shape[0], 1, img_rows, img_cols)
-    input_shape = (1, img_rows, img_cols)
-else:
-    x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
-    x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
-    input_shape = (img_rows, img_cols, 1)
+def lenet(lmdb, batch_size):
+    # Our version of LeNet: a series of linear and simple nonlinear transformations
+    n = caffe.NetSpec()
 
-x_train = x_train.astype('float32')
-x_test = x_test.astype('float32')
-x_train /= 255
-x_test /= 255
-print('x_train shape:', x_train.shape)
-print(x_train.shape[0], 'train samples')
-print(x_test.shape[0], 'test samples')
+    n.data, n.label = L.Data(batch_size=batch_size, backend=P.Data.LMDB, source=lmdb,
+                             transform_param=dict(scale=1./255), ntop=2)
 
-# convert class vectors to binary class matrices
-y_train = keras.utils.to_categorical(y_train, num_classes)
-y_test = keras.utils.to_categorical(y_test, num_classes)
+    n.conv1 = L.Convolution(n.data, kernel_size=5, num_output=20, weight_filler=dict(type='xavier'))
+    n.pool1 = L.Pooling(n.conv1, kernel_size=2, stride=2, pool=P.Pooling.MAX)
+    n.conv2 = L.Convolution(n.pool1, kernel_size=5, num_output=50, weight_filler=dict(type='xavier'))
+    n.pool2 = L.Pooling(n.conv2, kernel_size=2, stride=2, pool=P.Pooling.MAX)
+    n.fc1 =   L.InnerProduct(n.pool2, num_output=500, weight_filler=dict(type='xavier'))
+    n.relu1 = L.ReLU(n.fc1, in_place=True)
+    n.score = L.InnerProduct(n.relu1, num_output=10, weight_filler=dict(type='xavier'))
+    n.loss =  L.SoftmaxWithLoss(n.score, n.label)
 
-model = Sequential()
-model.add(Conv2D(32, kernel_size=(3, 3),
-                 activation='relu',
-                 input_shape=input_shape))
-model.add(Conv2D(64, (3, 3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
-model.add(Flatten())
-model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(num_classes, activation='softmax'))
+    return n.to_proto()
 
-model.compile(loss=keras.losses.categorical_crossentropy,
-              optimizer=keras.optimizers.Adadelta(),
-              metrics=['accuracy'])
+with open('mnist/lenet_auto_train.prototxt', 'w') as f:
+    f.write(str(lenet('mnist/mnist_train_lmdb', 64)))
 
-model.fit(x_train, y_train,
-          batch_size=batch_size,
-          epochs=epochs,
-          verbose=1,
-          validation_data=(x_test, y_test))
-score = model.evaluate(x_test, y_test, verbose=0)
-print('Test loss:', score[0])
-print('Test accuracy:', score[1])
+with open('mnist/lenet_auto_test.prototxt', 'w') as f:
+    f.write(str(lenet('mnist/mnist_test_lmdb', 100)))
+
+caffe.set_mode_cpu()  # Or use gpu by running the next line instead if your machine has access to a GPU
+# caffe.set_mode_gpu()
+
+solver = caffe.SGDSolver('mnist/lenet_auto_solver.prototxt')  # Load the solver
+
+solver.solve()

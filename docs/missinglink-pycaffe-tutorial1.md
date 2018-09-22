@@ -49,6 +49,7 @@ Next, let’s open a terminal and `git clone` using the pasted URL of your forke
 
 ```bash
 $ git clone git@github.com:<YOUR_GITHUB_USERNAME>/missinglink-pycaffe-tutorial1.git
+$ cd missinglink-pycaffe-tutorial1
 ```
 
 Now that the code is on your machine, let's prepare the environment. Run the following commands:

@@ -19,14 +19,6 @@ $ echo $CAFFE_ROOT
 /opt/caffe
 ```
 
----
-**NOTE**
-
-This tutorial assumes you’re using virtualenv to scope your working environment.
-If you don't have it installed, you can follow [this guide](https://packaging.python.org/guides/installing-using-pip-and-virtualenv/) to get it set up.
-
----
-
 ## First things first ...
 
 Let’s head to the MissingLink PyCaffe Tutorial 1 [Github repository](https://github.com/missinglinkai/missinglink-pycaffe-tutorial1), and examine it.
@@ -50,13 +42,6 @@ Next, let’s open a terminal and `git clone` using the pasted URL of your forke
 ```bash
 $ git clone git@github.com:<YOUR_GITHUB_USERNAME>/missinglink-pycaffe-tutorial1.git
 $ cd missinglink-pycaffe-tutorial1
-```
-
-Now that the code is on your machine, let's prepare the environment. Run the following commands:
-
-```bash
-$ python3 -m virtualenv env
-$ source env/bin/activate
 ```
 
 ## Let's run it

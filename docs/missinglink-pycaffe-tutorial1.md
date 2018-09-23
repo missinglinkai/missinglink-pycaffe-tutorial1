@@ -54,7 +54,7 @@ $ python mnist_cnn.py
 
 ![Experiment progress in terminal](../images/tutorials-experiment-start.gif)
 
-As you can see, the code runs the experiment in 12 epochs.
+As you can see, the code runs the experiment.
 
 # Integrating the MissingLink SDK
 

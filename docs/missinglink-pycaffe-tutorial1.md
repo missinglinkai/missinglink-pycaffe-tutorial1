@@ -107,8 +107,6 @@ Go ahead and open the code in your favorite IDE.
 Add the MissingLink SDK as a requirement under the `requirements.txt` file:
 
 ```diff
-tensorflow
-keras
 +missinglink
 ```
 
@@ -123,69 +121,40 @@ $ pip install -r requirements.txt
 Open the `mnist_cnn.py` script file and import the MissingLink SDK:
 ```diff
 // ...
-from keras.layers import Dense, Dropout, Flatten
-from keras.layers import Conv2D, MaxPooling2D
-from keras import backend as K
+import caffe
+import os
 +import missinglink
 
-batch_size = 128
-num_classes = 10
-epochs = 12
+from caffe import layers as L, params as P
+from subprocess import call
 // ...
 ```
 
-Now we need to initialize a callback object that Keras will call during the different stages of the experiment:
+Now we need to initialize a callback object that PyCaffe will call during the different stages of the experiment:
 
 ```diff
 // ...
-from keras.layers import Conv2D, MaxPooling2D
-from keras import backend as K
-import missinglink
+from caffe import layers as L, params as P
+from subprocess import call
 +
-+missinglink_callback = missinglink.KerasCallback()
- 
-batch_size = 128
-num_classes = 10
-epochs = 12
++missinglink_callback = missinglink.PyCaffeCallback()
+
+caffe_root = os.environ['CAFFE_ROOT']
+
+os.environ['GLOG_minloglevel'] = '1'  # Set the logging level
 // ...
 ```
 
-Finally, let Keras use our callback object. We want to add calls during the training and test stages.  
+Finally, let PyCaffe use our callback object.
 
-Scroll all the way to the bottom of the file and add the MissingLink callback to the `fit()` function call:
-
-```diff
-// ...
-model.fit(x_train, y_train,
-          batch_size=batch_size,
-          epochs=epochs,
-          verbose=1,
-          validation_data=(x_test, y_test),
-+         callbacks=[missinglink_callback])
-
-score = model.evaluate(x_test, y_test, verbose=0)
-print('Test loss:', score[0])
-print('Test accuracy:', score[1])
-// ...
-```
-
-Lastly, let the MissingLink SDK know we're starting the testing stage:
+Scroll all the way to the bottom of the file and use MissingLink callback wrap the solver object:
 
 ```diff
 // ...
-model.fit(x_train, y_train,
-          batch_size=batch_size,
-          epochs=epochs,
-          verbose=1,
-          validation_data=(x_test, y_test),
-          callbacks=[missinglink_callback])
+-solver = caffe.SGDSolver('mnist/lenet_auto_solver.prototxt')  # Load the solver
++solver = missinglink_callback.create_wrapped_solver(caffe.SGDSolver, 'mnist/lenet_auto_solver.prototxt')
 
--score = model.evaluate(x_test, y_test, verbose=0)
-+with missinglink_callback.test(model):
-+    score = model.evaluate(x_test, y_test, verbose=0)
-+
-print('Test loss:', score[0])
-print('Test accuracy:', score[1])
+solver.solve()
 // ...
 ```
 

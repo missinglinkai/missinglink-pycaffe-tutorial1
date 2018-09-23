@@ -67,7 +67,7 @@ MissingLink provides a command line interface (CLI) that allows you to control e
 Let's go ahead and install it:
 
 ```bash
-$ pip install MissingLink
+$ pip install missinglink
 ```
 
 Next, authenticate with the MissingLink backend.
@@ -108,12 +108,6 @@ Add the MissingLink SDK as a requirement under the `requirements.txt` file:
 
 ```diff
 +missinglink
-```
-
-Now install the new requirements:
-
-```bash
-$ pip install -r requirements.txt
 ```
 
 ## Create the experiment in MissingLink

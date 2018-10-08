@@ -7,9 +7,12 @@
 
 import caffe
 import os
+import missinglink
 
 from caffe import layers as L, params as P
 from subprocess import call
+
+missinglink_callback = missinglink.PyCaffeCallback()
 
 caffe_root = os.environ['CAFFE_ROOT']
 
@@ -47,6 +50,6 @@ with open('mnist/lenet_auto_test.prototxt', 'w') as f:
 caffe.set_mode_cpu()  # Or use gpu by running the next line instead if your machine has access to a GPU
 # caffe.set_mode_gpu()
 
-solver = caffe.SGDSolver('mnist/lenet_auto_solver.prototxt')  # Load the solver
+solver = missinglink_callback.create_wrapped_solver(caffe.SGDSolver, 'mnist/lenet_auto_solver.prototxt')
 
 solver.solve()
